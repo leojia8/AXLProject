@@ -1,0 +1,167 @@
+/*
+ * styles.css — Global Stylesheet & Design System
+ *
+ * Responsibilities:
+ * - CSS custom properties (design tokens: colors, spacing, fonts, radii)
+ * - CSS reset / base styles
+ * - Typography (Google Fonts: Inter)
+ * - Layout primitives
+ * - Component styles: header, footer, hero, feature cards
+ * - Game board styles: slots, reveals, animations
+ * - Input and button styles
+ * - Strikes and score display
+ * - Overlay and modal styles
+ * - Source badge styles (REAL / AI / HYBRID)
+ * - Loading spinner
+ * - Responsive breakpoints
+ * - Animations and transitions
+ *
+ * Design direction:
+ * - Dark theme with deep navy/charcoal background
+ * - Vibrant accent: electric blue or golden yellow (Family Feud style)
+ * - Glassmorphism for cards and overlays
+ * - Smooth micro-animations for reveals and interactions
+ * - High contrast text for readability
+ */
+
+
+/* ===========================================================================
+   DESIGN TOKENS
+   =========================================================================== */
+
+/* TODO: :root {
+    --color-bg-primary: ...;        (deep dark background)
+    --color-bg-secondary: ...;      (card/surface background)
+    --color-bg-glass: ...;          (glassmorphism bg with transparency)
+    --color-accent-primary: ...;    (electric blue or gold)
+    --color-accent-secondary: ...;  (secondary accent)
+    --color-text-primary: ...;      (white/light text)
+    --color-text-secondary: ...;    (muted text)
+    --color-success: ...;           (correct guess green)
+    --color-danger: ...;            (strike red)
+    --color-board-hidden: ...;      (unrevealed slot color)
+    --color-board-revealed: ...;    (revealed slot color)
+
+    --font-primary: 'Inter', sans-serif;
+    --font-display: 'Outfit', sans-serif;
+
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+
+    --radius-sm: 0.375rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-full: 9999px;
+
+    --shadow-sm: ...;
+    --shadow-md: ...;
+    --shadow-glow: ...;
+
+    --transition-fast: 150ms ease;
+    --transition-medium: 300ms ease;
+    --transition-slow: 500ms ease;
+} */
+
+
+/* ===========================================================================
+   RESET & BASE
+   =========================================================================== */
+
+/* TODO: Box-sizing, margin reset, smooth scrolling, font defaults */
+
+
+/* ===========================================================================
+   TYPOGRAPHY
+   =========================================================================== */
+
+/* TODO: Headings, body text, emphasis styles */
+
+
+/* ===========================================================================
+   LAYOUT
+   =========================================================================== */
+
+/* TODO: #app-header — sticky top bar, minimal */
+/* TODO: #app-main — centered content area, max-width */
+/* TODO: #app-footer — fixed bottom or end of page */
+
+
+/* ===========================================================================
+   LANDING PAGE
+   =========================================================================== */
+
+/* TODO: #hero — flex column centered, full viewport height, gradient bg */
+/* TODO: Hero title — large, gradient text or glow */
+/* TODO: Hero tagline — muted text below title */
+/* TODO: Play Now button — large, accent color, hover scale + glow */
+/* TODO: #features — 3-column grid of feature cards */
+/* TODO: Feature cards — glassmorphism, icon + title + description */
+
+
+/* ===========================================================================
+   GAME PAGE
+   =========================================================================== */
+
+/* TODO: #game-container — flex column or grid layout */
+
+/* --- Prompt Area --- */
+/* TODO: #prompt-area — centered, large text, subtle bg */
+
+/* --- Answer Board --- */
+/* TODO: #answer-board — vertical list or grid of answer slots */
+/* TODO: .answer-slot — the individual slot card */
+/* TODO: .answer-slot.hidden — dark/blue card with rank number only */
+/* TODO: .answer-slot.revealed — flip animation, show text + score */
+/* TODO: .answer-slot .rank — left side number */
+/* TODO: .answer-slot .text — center answer text */
+/* TODO: .answer-slot .score — right side score badge */
+
+/* --- Stats Bar --- */
+/* TODO: #stats-bar — horizontal bar below board */
+/* TODO: .score-display — current score, large number */
+/* TODO: .strikes-display — X marks, red when active */
+
+/* --- Input Area --- */
+/* TODO: #input-area — centered input + button group */
+/* TODO: input[type="text"] — dark bg, light text, accent border on focus */
+/* TODO: #submit-btn — accent color, hover effect */
+
+/* --- Guess History --- */
+/* TODO: #guess-history — scrollable list, compact */
+/* TODO: .guess-item.correct — green indicator */
+/* TODO: .guess-item.incorrect — red indicator */
+
+/* --- Source & Category Badges --- */
+/* TODO: .badge — small pill shape */
+/* TODO: .badge-real, .badge-ai, .badge-hybrid — color variants */
+
+/* --- Round Over Overlay --- */
+/* TODO: #round-over-overlay — full screen, glassmorphism backdrop */
+/* TODO: Overlay content — final board, score, commentary, play again */
+
+/* --- Loading Spinner --- */
+/* TODO: #loading-spinner — centered spinner animation */
+
+
+/* ===========================================================================
+   ANIMATIONS
+   =========================================================================== */
+
+/* TODO: @keyframes fadeIn — entrance animation */
+/* TODO: @keyframes slideUp — slide up entrance */
+/* TODO: @keyframes flipReveal — card flip for answer reveal */
+/* TODO: @keyframes pulse — subtle pulse for active elements */
+/* TODO: @keyframes shake — shake animation for strikes */
+/* TODO: @keyframes glow — glow pulse for buttons */
+
+
+/* ===========================================================================
+   RESPONSIVE
+   =========================================================================== */
+
+/* TODO: @media (max-width: 768px) — tablet adjustments */
+/* TODO: @media (max-width: 480px) — mobile adjustments */

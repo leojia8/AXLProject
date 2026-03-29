@@ -1,0 +1,88 @@
+<!--
+  game.html — Game Page (SPA Shell)
+
+  Responsibilities:
+  - Survey prompt display area
+  - Answer board with slots (hidden → revealed animation)
+  - Guess input field + submit button
+  - Strikes display (X X X)
+  - Score display
+  - Guess history sidebar/area
+  - Source type badge (REAL / AI / HYBRID)
+  - Round-over overlay with full board reveal
+  - "New Round" / "Play Again" button
+  - Loading states for API calls
+
+  All gameplay logic is in game.js — this is just the HTML structure.
+  game.js drives everything via fetch() calls to /api/* endpoints.
+
+  Design goals:
+  - One-screen gameplay (no scrolling needed)
+  - Answer board is the visual centerpiece
+  - Satisfying reveal animations when answers are uncovered
+  - Clear visual feedback for correct guess vs strike
+  - Mobile-responsive layout
+-->
+{% extends "base.html" %}
+
+{% block title %}Playing — Family Feud AI{% endblock %}
+
+{% block content %}
+<!-- TODO: Game Container -->
+<div id="game-container">
+
+    <!-- TODO: Prompt Display -->
+    <div id="prompt-area">
+        <!-- TODO: Survey question text (large, centered) -->
+        <!-- TODO: Source badge (small pill: REAL / AI / HYBRID) -->
+        <!-- TODO: Category badge -->
+    </div>
+
+    <!-- TODO: Answer Board -->
+    <div id="answer-board">
+        <!-- TODO: Generate answer slots dynamically via JS
+             Each slot:
+             - Rank number (1-8)
+             - Hidden state: blue/dark card 
+             - Revealed state: shows answer text + score with flip animation
+        -->
+    </div>
+
+    <!-- TODO: Game Stats Bar -->
+    <div id="stats-bar">
+        <!-- TODO: Score display -->
+        <!-- TODO: Strikes display (visual X marks) -->
+    </div>
+
+    <!-- TODO: Input Area -->
+    <div id="input-area">
+        <!-- TODO: Text input for guess -->
+        <!-- TODO: Submit button -->
+        <!-- TODO: Disabled state when round is over -->
+    </div>
+
+    <!-- TODO: Guess History -->
+    <div id="guess-history">
+        <!-- TODO: List of past guesses with ✓/✗ indicators -->
+    </div>
+
+    <!-- TODO: Round Over Overlay -->
+    <div id="round-over-overlay" class="hidden">
+        <!-- TODO: Full board reveal -->
+        <!-- TODO: Final score -->
+        <!-- TODO: Optional AI commentary -->
+        <!-- TODO: "Play Again" button -->
+        <!-- TODO: "Back to Home" link -->
+    </div>
+
+    <!-- TODO: Loading Spinner (for LLM-heavy operations) -->
+    <div id="loading-spinner" class="hidden">
+        <!-- TODO: Animated spinner + "Thinking..." text -->
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/game.js"></script>
+{% endblock %}

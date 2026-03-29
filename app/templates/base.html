@@ -1,0 +1,50 @@
+<!-- 
+  base.html — Base Template
+
+  Shared HTML shell for all pages.
+
+  Responsibilities:
+  - HTML5 doctype and meta tags (SEO)
+  - Google Fonts import (Inter / Outfit)
+  - Link to styles.css
+  - Common page structure (header, main, footer)
+  - Block definitions for child templates: title, content, scripts
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <!-- TODO: Dynamic title block -->
+    <title>{% block title %}Family Feud AI{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}An AI-powered Family Feud game with real crowd data and smart answer matching.{% endblock %}">
+    
+    <!-- Google Fonts -->
+    <!-- TODO: Import Inter and/or Outfit font families -->
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+    
+    {% block head_extra %}{% endblock %}
+</head>
+<body>
+    <!-- TODO: Header with app branding (minimal — game name + optional nav) -->
+    <header id="app-header">
+        <!-- TODO: App logo/title -->
+    </header>
+    
+    <!-- Main content area — overridden by child templates -->
+    <main id="app-main">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- TODO: Footer with attribution, source info -->
+    <footer id="app-footer">
+        <!-- TODO: "Built for AXL" or similar -->
+    </footer>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

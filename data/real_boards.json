@@ -1,0 +1,387 @@
+[
+  {
+    "id": "students_exam_01",
+    "prompt": "Name something students do right before an exam",
+    "answers": [
+      {"text": "study", "score": 32},
+      {"text": "check their notes", "score": 22},
+      {"text": "panic", "score": 16},
+      {"text": "drink coffee", "score": 12},
+      {"text": "check their phone", "score": 9},
+      {"text": "pray", "score": 5},
+      {"text": "go to the bathroom", "score": 4}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "public forum aggregation"},
+    "category": "student_life"
+  },
+  {
+    "id": "first_date_01",
+    "prompt": "Name something people worry about on a first date",
+    "answers": [
+      {"text": "how they look", "score": 35},
+      {"text": "what to talk about", "score": 25},
+      {"text": "bad breath", "score": 15},
+      {"text": "being awkward", "score": 10},
+      {"text": "the bill", "score": 8},
+      {"text": "arriving late", "score": 7}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "public survey data"},
+    "category": "relationships"
+  },
+  {
+    "id": "phone_01",
+    "prompt": "Name something people do first thing when they wake up",
+    "answers": [
+      {"text": "check their phone", "score": 38},
+      {"text": "go to the bathroom", "score": 22},
+      {"text": "brush teeth", "score": 14},
+      {"text": "drink water", "score": 10},
+      {"text": "hit snooze", "score": 9},
+      {"text": "make coffee", "score": 7}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "public discussion aggregation"},
+    "category": "daily_life"
+  },
+  {
+    "id": "job_interview_01",
+    "prompt": "Name something people do to prepare for a job interview",
+    "answers": [
+      {"text": "research the company", "score": 30},
+      {"text": "pick out an outfit", "score": 22},
+      {"text": "practice answers", "score": 18},
+      {"text": "update their resume", "score": 12},
+      {"text": "get a haircut", "score": 10},
+      {"text": "ask friends for advice", "score": 8}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "career forum aggregation"},
+    "category": "career"
+  },
+  {
+    "id": "grocery_01",
+    "prompt": "Name something people always forget to buy at the grocery store",
+    "answers": [
+      {"text": "milk", "score": 28},
+      {"text": "eggs", "score": 22},
+      {"text": "bread", "score": 18},
+      {"text": "butter", "score": 12},
+      {"text": "toilet paper", "score": 11},
+      {"text": "onions", "score": 9}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "public poll data"},
+    "category": "daily_life"
+  },
+  {
+    "id": "procrastination_01",
+    "prompt": "Name something people do when they are procrastinating",
+    "answers": [
+      {"text": "scroll social media", "score": 34},
+      {"text": "watch YouTube", "score": 20},
+      {"text": "eat snacks", "score": 14},
+      {"text": "clean the house", "score": 12},
+      {"text": "take a nap", "score": 10},
+      {"text": "reorganize their desk", "score": 6},
+      {"text": "text friends", "score": 4}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "public discussion aggregation"},
+    "category": "student_life"
+  },
+  {
+    "id": "vacation_01",
+    "prompt": "Name something people always pack for vacation but never use",
+    "answers": [
+      {"text": "books", "score": 28},
+      {"text": "workout clothes", "score": 22},
+      {"text": "first aid kit", "score": 16},
+      {"text": "extra shoes", "score": 14},
+      {"text": "sunscreen", "score": 11},
+      {"text": "travel adapter", "score": 9}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "travel forum aggregation"},
+    "category": "travel"
+  },
+  {
+    "id": "tech_01",
+    "prompt": "Name an app people check more than 10 times a day",
+    "answers": [
+      {"text": "Instagram", "score": 28},
+      {"text": "TikTok", "score": 22},
+      {"text": "text messages", "score": 18},
+      {"text": "email", "score": 14},
+      {"text": "Twitter/X", "score": 10},
+      {"text": "WhatsApp", "score": 8}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "tech usage survey"},
+    "category": "technology"
+  },
+  {
+    "id": "roommate_01",
+    "prompt": "Name something that annoys people about their roommate",
+    "answers": [
+      {"text": "not cleaning up", "score": 32},
+      {"text": "being too loud", "score": 24},
+      {"text": "eating their food", "score": 16},
+      {"text": "having guests over too often", "score": 12},
+      {"text": "leaving lights on", "score": 9},
+      {"text": "hogging the bathroom", "score": 7}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "student housing forum aggregation"},
+    "category": "student_life"
+  },
+  {
+    "id": "office_01",
+    "prompt": "Name something that makes a meeting feel like it could have been an email",
+    "answers": [
+      {"text": "reading off slides", "score": 30},
+      {"text": "no agenda", "score": 22},
+      {"text": "one person talking the whole time", "score": 18},
+      {"text": "status updates only", "score": 14},
+      {"text": "going over time", "score": 9},
+      {"text": "no decisions made", "score": 7}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "workplace discussion aggregation"},
+    "category": "career"
+  },
+  {
+    "id": "cooking_01",
+    "prompt": "Name a meal that people claim they can cook but really cannot",
+    "answers": [
+      {"text": "steak", "score": 26},
+      {"text": "pasta", "score": 20},
+      {"text": "eggs", "score": 16},
+      {"text": "rice", "score": 14},
+      {"text": "pancakes", "score": 12},
+      {"text": "chicken", "score": 8},
+      {"text": "soup", "score": 4}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "cooking forum aggregation"},
+    "category": "food"
+  },
+  {
+    "id": "gym_01",
+    "prompt": "Name something people say they will start doing on Monday",
+    "answers": [
+      {"text": "going to the gym", "score": 34},
+      {"text": "eating healthy", "score": 24},
+      {"text": "waking up early", "score": 16},
+      {"text": "studying more", "score": 10},
+      {"text": "drinking more water", "score": 9},
+      {"text": "quitting social media", "score": 7}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "public discussion aggregation"},
+    "category": "daily_life"
+  },
+  {
+    "id": "streaming_01",
+    "prompt": "Name something people do instead of picking a movie on Netflix",
+    "answers": [
+      {"text": "browse for 30 minutes", "score": 32},
+      {"text": "rewatch something old", "score": 22},
+      {"text": "check their phone", "score": 16},
+      {"text": "ask someone else to pick", "score": 12},
+      {"text": "fall asleep", "score": 10},
+      {"text": "switch to YouTube", "score": 8}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "entertainment forum aggregation"},
+    "category": "entertainment"
+  },
+  {
+    "id": "ai_tools_01",
+    "prompt": "Name something students use AI for in school",
+    "answers": [
+      {"text": "writing essays", "score": 30},
+      {"text": "homework help", "score": 22},
+      {"text": "summarizing readings", "score": 16},
+      {"text": "studying for exams", "score": 12},
+      {"text": "coding assignments", "score": 10},
+      {"text": "generating ideas", "score": 6},
+      {"text": "translating text", "score": 4}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "education discussion aggregation"},
+    "category": "technology"
+  },
+  {
+    "id": "coffee_shop_01",
+    "prompt": "Name something that makes a coffee shop a good study spot",
+    "answers": [
+      {"text": "free wifi", "score": 30},
+      {"text": "background noise", "score": 20},
+      {"text": "coffee availability", "score": 18},
+      {"text": "comfortable seating", "score": 14},
+      {"text": "outlets to charge", "score": 10},
+      {"text": "no distractions from home", "score": 8}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "student discussion aggregation"},
+    "category": "student_life"
+  },
+  {
+    "id": "online_shopping_01",
+    "prompt": "Name something people buy online at 2 AM that they regret",
+    "answers": [
+      {"text": "clothes", "score": 28},
+      {"text": "gadgets they don't need", "score": 22},
+      {"text": "food delivery", "score": 18},
+      {"text": "subscriptions", "score": 14},
+      {"text": "shoes", "score": 10},
+      {"text": "random Amazon finds", "score": 8}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "consumer behavior survey"},
+    "category": "daily_life"
+  },
+  {
+    "id": "social_media_01",
+    "prompt": "Name a reason people say they want to quit social media",
+    "answers": [
+      {"text": "wastes too much time", "score": 32},
+      {"text": "bad for mental health", "score": 24},
+      {"text": "comparison to others", "score": 16},
+      {"text": "too many ads", "score": 10},
+      {"text": "privacy concerns", "score": 9},
+      {"text": "fake news", "score": 5},
+      {"text": "drama", "score": 4}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "public opinion survey"},
+    "category": "technology"
+  },
+  {
+    "id": "airport_01",
+    "prompt": "Name something people always do at the airport even though they don't need to",
+    "answers": [
+      {"text": "arrive way too early", "score": 30},
+      {"text": "check the departure board constantly", "score": 22},
+      {"text": "buy overpriced food", "score": 18},
+      {"text": "walk around shops", "score": 12},
+      {"text": "charge their phone to 100%", "score": 10},
+      {"text": "stand by the gate early", "score": 8}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "travel discussion aggregation"},
+    "category": "travel"
+  },
+  {
+    "id": "pandemic_01",
+    "prompt": "Name a habit people picked up during the pandemic that they still have",
+    "answers": [
+      {"text": "working from home", "score": 28},
+      {"text": "online shopping", "score": 20},
+      {"text": "binge watching shows", "score": 16},
+      {"text": "cooking at home", "score": 14},
+      {"text": "sanitizing everything", "score": 12},
+      {"text": "avoiding crowds", "score": 6},
+      {"text": "video calling family", "score": 4}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "lifestyle survey aggregation"},
+    "category": "daily_life"
+  },
+  {
+    "id": "new_years_01",
+    "prompt": "Name a New Year's resolution people break within a week",
+    "answers": [
+      {"text": "exercise more", "score": 32},
+      {"text": "eat healthier", "score": 24},
+      {"text": "save money", "score": 16},
+      {"text": "quit smoking", "score": 10},
+      {"text": "read more books", "score": 9},
+      {"text": "spend less time on phone", "score": 5},
+      {"text": "wake up earlier", "score": 4}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "seasonal survey aggregation"},
+    "category": "daily_life"
+  },
+  {
+    "id": "pet_peeves_01",
+    "prompt": "Name a common pet peeve people have about texting",
+    "answers": [
+      {"text": "one word replies", "score": 28},
+      {"text": "leaving on read", "score": 24},
+      {"text": "taking too long to respond", "score": 18},
+      {"text": "too many emojis", "score": 12},
+      {"text": "voice messages instead of texts", "score": 10},
+      {"text": "group chat notifications", "score": 8}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "social behavior discussion aggregation"},
+    "category": "relationships"
+  },
+  {
+    "id": "college_01",
+    "prompt": "Name something every college student's apartment has",
+    "answers": [
+      {"text": "ramen noodles", "score": 26},
+      {"text": "a messy desk", "score": 20},
+      {"text": "fairy lights", "score": 16},
+      {"text": "dirty laundry pile", "score": 14},
+      {"text": "empty pizza boxes", "score": 12},
+      {"text": "a broken futon", "score": 8},
+      {"text": "stolen dining hall cups", "score": 4}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "student life forum aggregation"},
+    "category": "student_life"
+  },
+  {
+    "id": "passwords_01",
+    "prompt": "Name something people use as a password that they definitely should not",
+    "answers": [
+      {"text": "123456", "score": 30},
+      {"text": "their birthday", "score": 22},
+      {"text": "password", "score": 16},
+      {"text": "their pet's name", "score": 14},
+      {"text": "their name", "score": 10},
+      {"text": "qwerty", "score": 8}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "cybersecurity survey data"},
+    "category": "technology"
+  },
+  {
+    "id": "presentation_01",
+    "prompt": "Name something people fear about giving a presentation",
+    "answers": [
+      {"text": "forgetting what to say", "score": 30},
+      {"text": "public speaking anxiety", "score": 22},
+      {"text": "technology failing", "score": 16},
+      {"text": "being judged", "score": 12},
+      {"text": "tough questions", "score": 10},
+      {"text": "going over time", "score": 6},
+      {"text": "voice shaking", "score": 4}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "public speaking survey"},
+    "category": "career"
+  },
+  {
+    "id": "weather_01",
+    "prompt": "Name something people complain about during summer",
+    "answers": [
+      {"text": "the heat", "score": 34},
+      {"text": "bugs", "score": 20},
+      {"text": "sunburn", "score": 16},
+      {"text": "humidity", "score": 12},
+      {"text": "allergies", "score": 9},
+      {"text": "high electricity bill", "score": 5},
+      {"text": "traffic", "score": 4}
+    ],
+    "source_type": "real",
+    "source_meta": {"origin": "seasonal discussion aggregation"},
+    "category": "daily_life"
+  }
+]
