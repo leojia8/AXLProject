@@ -1,5 +1,6 @@
 """
 Tests for API endpoints via FastAPI TestClient.
+Tests use real boards only (no LLM calls) for reliability.
 """
 
 import pytest
@@ -51,7 +52,6 @@ class TestNewRoundEndpoint:
         res = client.post("/api/new-round", json={"category": "daily_life", "prefer_real": True})
         assert res.status_code == 200
         data = res.json()
-        # Category should match or fall back to another
         assert "category" in data
 
     def test_board_answers_hidden(self):
@@ -65,16 +65,18 @@ class TestNewRoundEndpoint:
 
 
 class TestGuessEndpoint:
-    def _start_round(self):
-        res = client.post("/api/new-round", json={"prefer_real": True})
+    def _start_specific_round(self):
+        """Start a round and return data - uses real board with known answers."""
+        res = client.post("/api/new-round", json={"category": "student_life", "prefer_real": True})
         return res.json()
 
-    def test_guess_flow(self):
-        """Test that a guess submission returns proper structure."""
-        round_data = self._start_round()
+    def test_guess_returns_structure(self):
+        """Test a guess that uses deterministic matching (no LLM needed)."""
+        round_data = self._start_specific_round()
+        # Use "study" which is a common answer in student_life boards
         res = client.post("/api/guess", json={
             "round_id": round_data["round_id"],
-            "guess": "something random"
+            "guess": "study"
         })
         assert res.status_code == 200
         data = res.json()
@@ -92,7 +94,7 @@ class TestGuessEndpoint:
         assert res.status_code == 404
 
     def test_empty_guess(self):
-        round_data = self._start_round()
+        round_data = self._start_specific_round()
         res = client.post("/api/guess", json={
             "round_id": round_data["round_id"],
             "guess": "  "
@@ -102,7 +104,7 @@ class TestGuessEndpoint:
 
 class TestRevealEndpoint:
     def test_reveal(self):
-        res = client.post("/api/new-round", json={})
+        res = client.post("/api/new-round", json={"prefer_real": True})
         assert res.status_code == 200
         round_data = res.json()
 

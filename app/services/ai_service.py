@@ -142,18 +142,23 @@ async def semantic_match(guess: str, answers: list[str]) -> Optional[dict]:
 
     answers_formatted = "\n".join(f"{i+1}. {a}" for i, a in enumerate(answers))
 
-    user_prompt = f"""You are judging a Family Feud game. Determine whether the player's guess matches one of the board answers.
+    user_prompt = f"""You are a strict judge for a Family Feud game. Determine if the player's guess refers to the SAME specific action or thing as one of the board answers.
 
 Board answers:
 {answers_formatted}
 
 Player's guess: "{guess}"
 
-Rules:
-- Allow synonyms, shorthand, and common paraphrases (e.g., "phone" matches "check their phone")
-- Allow singular/plural variations
-- Do NOT allow overly broad or unrelated guesses
-- Be reasonably generous — if a real game show host would accept it, you should too
+STRICT Rules — follow these exactly:
+- A match means the guess describes the SAME core action, object, or behavior as an answer
+- Allow: synonyms ("cell phone" = "phone"), shorthand ("coffee" = "grab coffee"), singular/plural
+- Allow: rephrasing of the same idea ("stand at the gate" = "stand by the gate early")
+- REJECT: different actions that merely happen in the same context
+  - Example: "standing in line" does NOT match "check the departure board" (different actions!)
+  - Example: "eating food" does NOT match "buying a ticket" (different actions!)
+- REJECT: overly broad guesses that could apply to many answers
+- When in doubt, REJECT — false negatives are better than false positives
+- Set confidence below 0.5 for anything you're not very sure about
 
 Return ONLY valid JSON, no markdown:
 {{

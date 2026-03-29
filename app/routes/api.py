@@ -5,6 +5,7 @@ All game logic endpoints. Returns JSON for the frontend JS to consume.
 """
 
 from fastapi import APIRouter, HTTPException
+from app.config import settings
 from app.models.schemas import (
     NewRoundRequest, NewRoundResponse, GuessRequest, GuessResponse,
     RevealRequest, RevealResponse, CategoriesResponse
@@ -106,15 +107,16 @@ async def reveal(req: RevealRequest):
     state = game_service.reveal_board(req.round_id)
     client_board = game_service.get_client_board(state)
 
-    # Try to generate AI commentary (non-blocking, optional)
+    # Try to generate AI commentary (optional, skip in test environments)
     commentary = None
-    try:
-        from app.services.ai_service import generate_commentary
-        commentary = await generate_commentary(
-            state["prompt"], state["answers"], state["source_type"]
-        )
-    except Exception:
-        pass
+    if settings.GEMINI_API_KEY and settings.APP_ENV != "test":
+        try:
+            from app.services.ai_service import generate_commentary
+            commentary = await generate_commentary(
+                state["prompt"], state["answers"], state["source_type"]
+            )
+        except Exception:
+            pass
 
     return RevealResponse(
         prompt=state["prompt"],

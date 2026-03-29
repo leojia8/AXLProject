@@ -1,0 +1,71 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.13.12, pytest-9.0.2, pluggy-1.6.0 -- C:\Users\leo8j\project\AXLProject\venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\leo8j\project\AXLProject
+plugins: anyio-4.13.0, asyncio-1.3.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 44 items
+
+tests/test_api.py::TestLandingPage::test_home_loads PASSED               [  2%]
+tests/test_api.py::TestLandingPage::test_play_page_loads PASSED          [  4%]
+tests/test_api.py::TestLandingPage::test_play_page_with_category PASSED  [  6%]
+tests/test_api.py::TestCategoriesEndpoint::test_get_categories FAILED    [  9%]
+tests/test_api.py::TestNewRoundEndpoint::test_new_round PASSED           [ 11%]
+tests/test_api.py::TestNewRoundEndpoint::test_new_round_with_category PASSED [ 13%]
+tests/test_api.py::TestNewRoundEndpoint::test_board_answers_hidden PASSED [ 15%]
+tests/test_api.py::TestGuessEndpoint::test_guess_flow PASSED             [ 18%]
+tests/test_api.py::TestGuessEndpoint::test_invalid_round PASSED          [ 20%]
+tests/test_api.py::TestGuessEndpoint::test_empty_guess PASSED            [ 22%]
+tests/test_api.py::TestRevealEndpoint::test_reveal PASSED                [ 25%]
+tests/test_api.py::TestRevealEndpoint::test_reveal_invalid_round PASSED  [ 27%]
+tests/test_game_service.py::TestCreateRound::test_creates_round PASSED   [ 29%]
+tests/test_game_service.py::TestCreateRound::test_answers_not_revealed PASSED [ 31%]
+tests/test_game_service.py::TestGetRound::test_get_existing PASSED       [ 34%]
+tests/test_game_service.py::TestGetRound::test_get_nonexistent PASSED    [ 36%]
+tests/test_game_service.py::TestRevealAnswer::test_reveals_and_scores PASSED [ 38%]
+tests/test_game_service.py::TestRevealAnswer::test_round_over_when_all_revealed PASSED [ 40%]
+tests/test_game_service.py::TestAddStrike::test_adds_strike PASSED       [ 43%]
+tests/test_game_service.py::TestAddStrike::test_round_over_on_max_strikes PASSED [ 45%]
+tests/test_game_service.py::TestRevealBoard::test_reveals_all PASSED     [ 47%]
+tests/test_game_service.py::TestGetClientBoard::test_hides_unrevealed PASSED [ 50%]
+tests/test_game_service.py::TestGetClientBoard::test_shows_revealed PASSED [ 52%]
+tests/test_matching.py::TestNormalize::test_basic PASSED                 [ 54%]
+tests/test_matching.py::TestNormalize::test_punctuation PASSED           [ 56%]
+tests/test_matching.py::TestNormalize::test_whitespace PASSED            [ 59%]
+tests/test_matching.py::TestNormalize::test_plural_strip PASSED          [ 61%]
+tests/test_matching.py::TestNormalize::test_empty PASSED                 [ 63%]
+tests/test_matching.py::TestExactMatch::test_exact PASSED                [ 65%]
+tests/test_matching.py::TestExactMatch::test_no_match PASSED             [ 68%]
+tests/test_matching.py::TestContainmentMatch::test_guess_in_answer PASSED [ 70%]
+tests/test_matching.py::TestContainmentMatch::test_gadgets_word_match PASSED [ 72%]
+tests/test_matching.py::TestContainmentMatch::test_answer_in_guess PASSED [ 75%]
+tests/test_matching.py::TestContainmentMatch::test_too_short PASSED      [ 77%]
+tests/test_matching.py::TestContainmentMatch::test_no_match PASSED       [ 79%]
+tests/test_matching.py::TestFuzzyMatch::test_typo PASSED                 [ 81%]
+tests/test_matching.py::TestFuzzyMatch::test_reorder PASSED              [ 84%]
+tests/test_matching.py::TestFuzzyMatch::test_no_match PASSED             [ 86%]
+tests/test_matching.py::TestCheckGuess::test_exact_match PASSED          [ 88%]
+tests/test_matching.py::TestCheckGuess::test_containment_match PASSED    [ 90%]
+tests/test_matching.py::TestCheckGuess::test_skip_revealed PASSED        [ 93%]
+tests/test_matching.py::TestCheckGuess::test_no_match PASSED             [ 95%]
+tests/test_matching.py::TestCheckGuess::test_empty_guess PASSED          [ 97%]
+tests/test_matching.py::TestCheckGuess::test_fuzzy_match PASSED          [100%]
+
+================================== FAILURES ===================================
+_________________ TestCategoriesEndpoint.test_get_categories __________________
+tests\test_api.py:35: in test_get_categories
+    assert len(data["categories"]) > 0
+E   assert 0 > 0
+E    +  where 0 = len([])
+============================== warnings summary ===============================
+tests/test_api.py::TestLandingPage::test_home_loads
+tests/test_api.py::TestLandingPage::test_play_page_loads
+tests/test_api.py::TestLandingPage::test_play_page_with_category
+  C:\Users\leo8j\project\AXLProject\venv\Lib\site-packages\starlette\templating.py:161: DeprecationWarning: The `name` is not the first parameter anymore. The first parameter should be the `Request` instance.
+  Replace `TemplateResponse(name, {"request": request})` by `TemplateResponse(request, name)`.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_api.py::TestCategoriesEndpoint::test_get_categories - asser...
+================== 1 failed, 43 passed, 3 warnings in 17.66s ==================
