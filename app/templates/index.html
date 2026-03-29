@@ -1,41 +1,53 @@
-<!--
-  index.html — Landing Page
-
-  Responsibilities:
-  - Hero section with game title and tagline
-  - One-line description of the AI-powered features
-  - "Play Now" CTA button (links to /play)
-  - Optional: category selection dropdown/chips
-  - Optional: "How It Works" brief section
-  - Optional: mode indicator (Real + AI Mixed Mode)
-
-  Design goals:
-  - Wow factor at first glance
-  - Dark theme with vibrant accent colors
-  - Smooth entrance animations
-  - Minimal text, maximum clarity
-  - One clear CTA
--->
 {% extends "base.html" %}
 
 {% block title %}Family Feud AI — Play Now{% endblock %}
 {% block meta_description %}Challenge yourself with AI-powered Family Feud! Real crowd data meets smart AI matching.{% endblock %}
 
 {% block content %}
-<!-- TODO: Hero Section -->
 <section id="hero">
-    <!-- TODO: Game title with gradient text or glow effect -->
-    <!-- TODO: Tagline: "Real Surveys. AI Brains. Your Guesses." or similar -->
-    <!-- TODO: Play Now button with hover animation -->
-    <!-- TODO: Optional category chips/quick-select -->
+    <div class="hero-bg-glow"></div>
+    <div class="hero-content">
+        <h1 class="hero-title">
+            <span class="title-emoji">🎯</span>
+            <span class="title-text">Family Feud <span class="accent-gradient">AI</span></span>
+        </h1>
+        <p class="hero-tagline">Real Surveys. AI Brains. Your Guesses.</p>
+        <p class="hero-description">
+            Guess the top answers from real crowd surveys — powered by AI semantic matching 
+            that understands your shorthand, synonyms, and natural language.
+        </p>
+
+        <div class="hero-actions">
+            <a href="/play" class="btn btn-primary btn-large" id="play-now-btn">
+                <span class="btn-icon">▶</span> Play Now
+            </a>
+        </div>
+
+        <div class="category-chips" id="category-chips">
+            {% for cat in categories %}
+            <a href="/play?category={{ cat }}" class="chip">{{ cat | replace('_', ' ') | title }}</a>
+            {% endfor %}
+        </div>
+    </div>
 </section>
 
-<!-- TODO: Features/How It Works Section (optional, keep brief) -->
 <section id="features">
-    <!-- TODO: 3 feature cards:
-         1. Real Survey Data — "Boards inspired by real crowd responses"
-         2. AI-Powered Matching — "Smart enough to understand your shorthand"  
-         3. Dynamic Boards — "New questions from trending topics"
-    -->
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3>Real Survey Data</h3>
+            <p>Boards inspired by real crowd responses and public opinion discussions.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🧠</div>
+            <h3>AI-Powered Matching</h3>
+            <p>Smart enough to know that "phone" matches "check their phone."</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>Dynamic Boards</h3>
+            <p>New questions generated from trending topics — gameplay evolves over time.</p>
+        </div>
+    </div>
 </section>
 {% endblock %}

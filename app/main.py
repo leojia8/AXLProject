@@ -1,41 +1,46 @@
 """
 main.py — FastAPI Application Entry Point
 
-Responsibilities:
-- Initialize the FastAPI application instance
-- Mount static file serving (CSS, JS, images)
-- Include route modules (pages + API)
-- Set up Jinja2 template engine
-- Run startup/shutdown lifecycle events (e.g., load real boards into memory)
+Initializes the app, mounts static files, includes routes,
+and runs startup/shutdown lifecycle events.
 """
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 from pathlib import Path
 
 from app.config import settings
+from app.services import board_service, cache_service
+from app.routes import pages, api
 
-# ---------------------------------------------------------------------------
-# App Initialization
-# ---------------------------------------------------------------------------
-# TODO: Create FastAPI instance with title, description, version
-# TODO: Mount /static directory for CSS/JS assets
-# TODO: Initialize Jinja2Templates pointing to app/templates/
 
-# ---------------------------------------------------------------------------
-# Startup Event
-# ---------------------------------------------------------------------------
-# TODO: On startup, call board_service.load_real_boards() to preload JSON data
-# TODO: On startup, call cache_service.load_cache() to restore any cached AI boards
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Startup and shutdown lifecycle."""
+    # Startup
+    board_service.load_real_boards()
+    board_service.load_trending_topics()
+    cache_service.load_cache()
+    print("[main] App started successfully")
+    yield
+    # Shutdown
+    cache_service.save_cache()
+    print("[main] App shut down, cache saved")
 
-# ---------------------------------------------------------------------------
-# Route Inclusion
-# ---------------------------------------------------------------------------
-# TODO: Include routes.pages router (serves HTML pages)
-# TODO: Include routes.api router (serves JSON API endpoints under /api)
 
-# ---------------------------------------------------------------------------
-# Shutdown Event
-# ---------------------------------------------------------------------------
-# TODO: On shutdown, call cache_service.save_cache() to persist generated boards
+# Create FastAPI app
+app = FastAPI(
+    title="Family Feud AI",
+    description="AI-powered Family Feud with real crowd data and smart semantic matching",
+    version="1.0.0",
+    lifespan=lifespan,
+)
+
+# Mount static files
+static_dir = Path(__file__).parent / "static"
+app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
+
+# Include routes
+app.include_router(pages.router)
+app.include_router(api.router)

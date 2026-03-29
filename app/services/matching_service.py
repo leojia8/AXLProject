@@ -1,31 +1,16 @@
 """
 matching_service.py — Guess Matching Pipeline
 
-Responsibilities:
-- Normalize user guesses (lowercase, strip punctuation, trim)
-- Run layered matching: exact → containment → fuzzy → LLM semantic
-- Return match result with the specific matched answer and confidence
-
-Matching pipeline (in order):
-1. Normalize guess text
-2. Exact match against answer texts
-3. Containment check (guess in answer OR answer in guess)
-4. Fuzzy string similarity via rapidfuzz (threshold from config)
-5. LLM semantic adjudication via ai_service (only if above steps fail)
-
-This layered approach is intentional:
-- Fast deterministic checks handle 80%+ of cases
-- LLM is only called for genuinely ambiguous guesses
-- Reduces latency, cost, and makes the system more resilient
+Layered matching: exact → containment → fuzzy → (LLM semantic in Phase 3)
+This layered approach handles 80%+ of cases without hitting the LLM.
 """
 
 import re
 import string
 from typing import Optional
 
-# from rapidfuzz import fuzz
-# from app.services.ai_service import semantic_match
-# from app.config import settings
+from rapidfuzz import fuzz
+from app.config import settings
 
 
 # ---------------------------------------------------------------------------
@@ -33,17 +18,18 @@ from typing import Optional
 # ---------------------------------------------------------------------------
 def normalize(text: str) -> str:
     """
-    Normalize text for comparison.
-
-    Steps:
-        - lowercase
-        - strip leading/trailing whitespace
-        - remove punctuation
-        - collapse multiple spaces
-        - optional: singularize simple plurals (e.g. "phones" → "phone")
+    Normalize text for comparison:
+    lowercase, strip whitespace, remove punctuation, collapse spaces.
     """
-    # TODO: Implement normalization pipeline
-    pass
+    text = text.lower().strip()
+    text = text.translate(str.maketrans("", "", string.punctuation))
+    text = re.sub(r"\s+", " ", text)
+    # Simple plural handling
+    if text.endswith("ies"):
+        pass  # Don't mess with "ies" words
+    elif text.endswith("s") and not text.endswith("ss"):
+        text = text[:-1]
+    return text
 
 
 # ---------------------------------------------------------------------------
@@ -53,86 +39,127 @@ async def check_guess(guess: str, answers: list[dict]) -> Optional[dict]:
     """
     Check a guess against all unrevealed answers using the layered pipeline.
 
-    Args:
-        guess: Raw user guess string
-        answers: List of answer dicts (each has "text", "score", "revealed")
-
-    Returns:
-        Dict with: matched_index (int), matched_answer (str), match_type (str)
-        Returns None if no match found at any layer
-
-    Only checks against unrevealed answers.
+    Returns dict with: matched_index, matched_answer, match_type
+    Returns None if no match found.
     """
-    # TODO: Normalize guess
-    # TODO: Get list of unrevealed answers
-    # TODO: Try exact match
-    # TODO: Try containment match
-    # TODO: Try fuzzy match
-    # TODO: Try semantic LLM match (async)
-    # TODO: Return best match or None
-    pass
+    normalized_guess = normalize(guess)
+
+    if not normalized_guess:
+        return None
+
+    # Build list of (original_index, normalized_text, original_text) for unrevealed only
+    unrevealed = []
+    for i, ans in enumerate(answers):
+        if not ans["revealed"]:
+            unrevealed.append((i, normalize(ans["text"]), ans["text"]))
+
+    if not unrevealed:
+        return None
+
+    # Layer 1: Exact match
+    result = _exact_match(normalized_guess, unrevealed)
+    if result:
+        return {"matched_index": result[0], "matched_answer": result[1], "match_type": "exact"}
+
+    # Layer 2: Containment
+    result = _containment_match(normalized_guess, unrevealed)
+    if result:
+        return {"matched_index": result[0], "matched_answer": result[1], "match_type": "containment"}
+
+    # Layer 3: Fuzzy
+    result = _fuzzy_match(normalized_guess, unrevealed)
+    if result:
+        return {"matched_index": result[0], "matched_answer": result[1], "match_type": "fuzzy"}
+
+    # Layer 4: Semantic LLM (added in Phase 3)
+    result = await _semantic_match(normalized_guess, unrevealed)
+    if result:
+        return {"matched_index": result[0], "matched_answer": result[1], "match_type": "semantic"}
+
+    return None
 
 
 # ---------------------------------------------------------------------------
 # Layer 1: Exact Match
 # ---------------------------------------------------------------------------
-def _exact_match(normalized_guess: str, answers: list[tuple[int, str]]) -> Optional[tuple[int, str]]:
-    """
-    Check if normalized guess exactly matches any normalized answer.
-
-    Args:
-        normalized_guess: Already normalized guess
-        answers: List of (original_index, normalized_answer_text) tuples
-
-    Returns:
-        (index, original_text) if match found, else None
-    """
-    # TODO: Compare normalized strings
-    pass
+def _exact_match(normalized_guess: str, answers: list[tuple[int, str, str]]) -> Optional[tuple[int, str]]:
+    """Check if normalized guess exactly matches any normalized answer."""
+    for orig_idx, norm_text, orig_text in answers:
+        if normalized_guess == norm_text:
+            return (orig_idx, orig_text)
+    return None
 
 
 # ---------------------------------------------------------------------------
 # Layer 2: Containment Match
 # ---------------------------------------------------------------------------
-def _containment_match(normalized_guess: str, answers: list[tuple[int, str]]) -> Optional[tuple[int, str]]:
+def _containment_match(normalized_guess: str, answers: list[tuple[int, str, str]]) -> Optional[tuple[int, str]]:
     """
     Check if guess is contained in any answer, or answer is contained in guess.
-    Useful for: guess "phone" matching answer "check their phone"
-
-    Only match if the contained string is a significant portion (not single char).
+    Requires minimum 3 char match to avoid false positives.
     """
-    # TODO: Check both directions of containment
-    # TODO: Require minimum length (e.g., 3+ chars) to avoid false positives
-    pass
+    if len(normalized_guess) < 3:
+        return None
+
+    best_match = None
+    best_score = 0
+
+    for orig_idx, norm_text, orig_text in answers:
+        # Check if guess appears as a word boundary in the answer
+        words_in_answer = norm_text.split()
+        guess_words = normalized_guess.split()
+
+        # Word-level match: any word in guess matches a word in answer
+        word_match = any(gw in words_in_answer for gw in guess_words if len(gw) >= 3)
+        if word_match:
+            coverage = len(normalized_guess) / len(norm_text)
+            adj_score = coverage + 0.3  # Bonus for word-level match
+            if adj_score > best_score:
+                best_match = (orig_idx, orig_text)
+                best_score = adj_score
+                continue
+
+        # Guess contained in answer (e.g., "phone" in "check their phone")
+        if normalized_guess in norm_text:
+            coverage = len(normalized_guess) / len(norm_text)
+            if coverage > best_score and coverage >= 0.2:  # At least 20% coverage
+                best_match = (orig_idx, orig_text)
+                best_score = coverage
+
+        # Answer contained in guess (e.g., "study hard" contains answer "study")
+        elif norm_text in normalized_guess:
+            coverage = len(norm_text) / len(normalized_guess)
+            if coverage > best_score and coverage >= 0.5:
+                best_match = (orig_idx, orig_text)
+                best_score = coverage
+
+    return best_match
 
 
 # ---------------------------------------------------------------------------
 # Layer 3: Fuzzy Match
 # ---------------------------------------------------------------------------
-def _fuzzy_match(normalized_guess: str, answers: list[tuple[int, str]]) -> Optional[tuple[int, str]]:
-    """
-    Use rapidfuzz to find best fuzzy match above threshold.
+def _fuzzy_match(normalized_guess: str, answers: list[tuple[int, str, str]]) -> Optional[tuple[int, str]]:
+    """Use rapidfuzz token_sort_ratio to find best fuzzy match above threshold."""
+    best_match = None
+    best_score = 0
 
-    Uses token_sort_ratio for word-order-independent matching.
-    Threshold from config (default: 80).
-    """
-    # TODO: Compute fuzz scores for each answer
-    # TODO: Find best match above threshold
-    # TODO: Return match or None
-    pass
+    for orig_idx, norm_text, orig_text in answers:
+        score = fuzz.token_sort_ratio(normalized_guess, norm_text)
+        if score > best_score and score >= settings.FUZZY_MATCH_THRESHOLD:
+            best_match = (orig_idx, orig_text)
+            best_score = score
+
+    return best_match
 
 
 # ---------------------------------------------------------------------------
-# Layer 4: Semantic LLM Match
+# Layer 4: Semantic LLM Match (Stub — implemented in Phase 3)
 # ---------------------------------------------------------------------------
-async def _semantic_match(guess: str, answers: list[tuple[int, str]]) -> Optional[tuple[int, str]]:
+async def _semantic_match(guess: str, answers: list[tuple[int, str, str]]) -> Optional[tuple[int, str]]:
     """
     Call ai_service.semantic_match() as final fallback.
-
-    Only called when deterministic methods fail.
-    Returns None if LLM call fails (graceful degradation).
+    Returns None until Phase 3 implementation.
     """
-    # TODO: Call ai_service.semantic_match()
-    # TODO: If is_match and confidence >= threshold, return match
-    # TODO: If LLM fails, return None (don't crash the game)
-    pass
+    # Phase 3: will import and call ai_service.semantic_match()
+    return None

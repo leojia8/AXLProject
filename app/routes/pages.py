@@ -1,33 +1,35 @@
 """
 pages.py — HTML Page Routes
 
-Responsibilities:
-- GET /          → Landing page (index.html)
-- GET /play      → Game page (game.html)
-
-These routes return rendered Jinja2 templates.
-All game logic is driven by the API routes; these just serve the HTML shells.
+Serves the landing page and game page via Jinja2 templates.
 """
 
 from fastapi import APIRouter, Request
 from fastapi.templating import Jinja2Templates
+from pathlib import Path
 
 router = APIRouter()
-
-# TODO: Initialize templates = Jinja2Templates(directory="app/templates")
-
-# ---------------------------------------------------------------------------
-# GET / — Landing Page
-# ---------------------------------------------------------------------------
-# TODO: Render index.html
-# - Pass app title, description, available categories
-# - Template should have "Play Now" CTA button
+templates = Jinja2Templates(directory=str(Path(__file__).parent.parent / "templates"))
 
 
-# ---------------------------------------------------------------------------
-# GET /play — Game Page
-# ---------------------------------------------------------------------------
-# TODO: Render game.html
-# - This is the main SPA shell
-# - All gameplay is driven by JS fetch() calls to /api/* endpoints
-# - Optionally accept ?category= query param to pre-select category
+@router.get("/")
+async def landing_page(request: Request):
+    """Serve the landing page."""
+    from app.services.board_service import get_categories
+    categories = get_categories()
+    return templates.TemplateResponse("index.html", {
+        "request": request,
+        "categories": categories,
+    })
+
+
+@router.get("/play")
+async def game_page(request: Request, category: str = None):
+    """Serve the game page shell. All gameplay driven by JS + API."""
+    from app.services.board_service import get_categories
+    categories = get_categories()
+    return templates.TemplateResponse("game.html", {
+        "request": request,
+        "category": category,
+        "categories": categories,
+    })
