@@ -154,12 +154,32 @@ def _fuzzy_match(normalized_guess: str, answers: list[tuple[int, str, str]]) -> 
 
 
 # ---------------------------------------------------------------------------
-# Layer 4: Semantic LLM Match (Stub — implemented in Phase 3)
+# Layer 4: Semantic LLM Match
 # ---------------------------------------------------------------------------
 async def _semantic_match(guess: str, answers: list[tuple[int, str, str]]) -> Optional[tuple[int, str]]:
     """
     Call ai_service.semantic_match() as final fallback.
-    Returns None until Phase 3 implementation.
+    Only called when deterministic methods fail.
+    Returns None if LLM call fails (graceful degradation).
     """
-    # Phase 3: will import and call ai_service.semantic_match()
+    from app.services.ai_service import semantic_match
+
+    answer_texts = [orig_text for _, _, orig_text in answers]
+
+    try:
+        result = await semantic_match(guess, answer_texts)
+        if result and result.get("is_match") and result.get("confidence", 0) >= settings.SEMANTIC_MATCH_CONFIDENCE:
+            matched_text = result.get("matched_answer")
+            # Find the index of the matched answer
+            for orig_idx, _, orig_text in answers:
+                if orig_text.lower() == matched_text.lower():
+                    return (orig_idx, orig_text)
+            # If exact text match fails, try containment
+            for orig_idx, _, orig_text in answers:
+                if matched_text.lower() in orig_text.lower() or orig_text.lower() in matched_text.lower():
+                    return (orig_idx, orig_text)
+    except Exception as e:
+        print(f"[matching_service] Semantic match error: {e}")
+
     return None
+

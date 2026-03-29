@@ -58,34 +58,58 @@ async def get_board(category: str = None, prefer_real: bool = True) -> dict:
     Selection cascade:
     1. Try real board matching category (if prefer_real)
     2. Try any real board (if category match fails)
-    3. (Phase 3) Try cached AI board
-    4. (Phase 3) Generate hybrid board from trending topic
-    5. (Phase 3) Generate pure AI board
-    6. Last resort: random real board
+    3. Try cached AI board
+    4. Generate hybrid board from trending topic
+    5. Generate pure AI board
+    6. Last resort: reset and retry real boards
     """
+    from app.services import ai_service, cache_service
+
+    # Step 1: Real board with category
     if prefer_real:
         board = _find_real_board(category)
         if board:
             return board
 
-    # Try without category filter
+    # Step 2: Real board any category
     board = _find_real_board(None)
     if board:
         return board
 
-    # Phase 3: AI fallback will go here
+    # Step 3: Cached AI board
+    cached = cache_service.get_cached_board(category)
+    if cached:
+        print(f"[board_service] Using cached AI board: '{cached.get('prompt', '?')}'")
+        return cached
 
-    # Last resort: reset served IDs and try again
+    # Step 4: Generate hybrid board from trending topic
+    topic = _get_trending_topic(category)
+    if topic:
+        print(f"[board_service] Generating hybrid board from topic: '{topic}'")
+        board = await ai_service.generate_board(category=category, topic=topic)
+        if board:
+            board["id"] = f"hybrid_{hash(board['prompt']) % 100000}"
+            cache_service.cache_board(board)
+            return board
+
+    # Step 5: Generate pure AI board
+    print(f"[board_service] Generating pure AI board for category: {category}")
+    board = await ai_service.generate_board(category=category)
+    if board:
+        board["id"] = f"ai_{hash(board['prompt']) % 100000}"
+        cache_service.cache_board(board)
+        return board
+
+    # Step 6: Last resort — reset served IDs and retry
     _served_board_ids.clear()
     board = _find_real_board(category)
     if board:
         return board
 
-    # Absolute fallback: first real board
     if _real_boards:
         return _real_boards[0]
 
-    # No boards at all — return a hardcoded emergency board
+    # Emergency fallback
     return {
         "id": "emergency_01",
         "prompt": "Name something people do every morning",

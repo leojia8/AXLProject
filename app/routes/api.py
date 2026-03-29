@@ -106,6 +106,16 @@ async def reveal(req: RevealRequest):
     state = game_service.reveal_board(req.round_id)
     client_board = game_service.get_client_board(state)
 
+    # Try to generate AI commentary (non-blocking, optional)
+    commentary = None
+    try:
+        from app.services.ai_service import generate_commentary
+        commentary = await generate_commentary(
+            state["prompt"], state["answers"], state["source_type"]
+        )
+    except Exception:
+        pass
+
     return RevealResponse(
         prompt=state["prompt"],
         board=client_board,
@@ -113,6 +123,7 @@ async def reveal(req: RevealRequest):
         strikes=state["strikes"],
         source_type=state["source_type"],
         category=state["category"],
+        commentary=commentary,
     )
 
 

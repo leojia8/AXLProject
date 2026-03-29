@@ -1,0 +1,47 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.12, pytest-9.0.2, pluggy-1.6.0 -- C:\Users\leo8j\project\AXLProject\venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\leo8j\project\AXLProject
+plugins: anyio-4.13.0, asyncio-1.3.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 12 items
+
+tests/test_api.py::TestLandingPage::test_home_loads PASSED               [  8%]
+tests/test_api.py::TestLandingPage::test_play_page_loads PASSED          [ 16%]
+tests/test_api.py::TestLandingPage::test_play_page_with_category PASSED  [ 25%]
+tests/test_api.py::TestCategoriesEndpoint::test_get_categories FAILED    [ 33%]
+tests/test_api.py::TestNewRoundEndpoint::test_new_round PASSED           [ 41%]
+tests/test_api.py::TestNewRoundEndpoint::test_new_round_with_category FAILED [ 50%]
+tests/test_api.py::TestNewRoundEndpoint::test_board_answers_hidden PASSED [ 58%]
+tests/test_api.py::TestGuessEndpoint::test_correct_guess PASSED          [ 66%]
+tests/test_api.py::TestGuessEndpoint::test_invalid_round PASSED          [ 75%]
+tests/test_api.py::TestGuessEndpoint::test_empty_guess PASSED            [ 83%]
+tests/test_api.py::TestRevealEndpoint::test_reveal PASSED                [ 91%]
+tests/test_api.py::TestRevealEndpoint::test_reveal_invalid_round PASSED  [100%]
+
+================================== FAILURES ===================================
+_________________ TestCategoriesEndpoint.test_get_categories __________________
+tests\test_api.py:35: in test_get_categories
+    assert len(data["categories"]) > 0
+E   assert 0 > 0
+E    +  where 0 = len([])
+______________ TestNewRoundEndpoint.test_new_round_with_category ______________
+tests\test_api.py:54: in test_new_round_with_category
+    assert data["category"] == "student_life"
+E   AssertionError: assert 'daily_life' == 'student_life'
+E     
+E     - student_life
+E     + daily_life
+============================== warnings summary ===============================
+tests/test_api.py::TestLandingPage::test_home_loads
+tests/test_api.py::TestLandingPage::test_play_page_loads
+tests/test_api.py::TestLandingPage::test_play_page_with_category
+  C:\Users\leo8j\project\AXLProject\venv\Lib\site-packages\starlette\templating.py:161: DeprecationWarning: The `name` is not the first parameter anymore. The first parameter should be the `Request` instance.
+  Replace `TemplateResponse(name, {"request": request})` by `TemplateResponse(request, name)`.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_api.py::TestCategoriesEndpoint::test_get_categories - asser...
+FAILED tests/test_api.py::TestNewRoundEndpoint::test_new_round_with_category
+================== 2 failed, 10 passed, 3 warnings in 0.70s ===================
