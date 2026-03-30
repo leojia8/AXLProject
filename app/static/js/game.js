@@ -178,7 +178,7 @@ function attachEventListeners() {
     // Sound toggle
     els.soundToggle.addEventListener('click', () => {
         soundEnabled = !soundEnabled;
-        els.soundIcon.textContent = soundEnabled ? 'ON' : 'OFF';
+        els.soundIcon.textContent = soundEnabled ? 'SOUND ON' : 'SOUND OFF';
         els.soundToggle.classList.toggle('muted', !soundEnabled);
     });
 
@@ -308,9 +308,9 @@ async function submitGuess(guess) {
             body: JSON.stringify({ round_id: currentRoundId, guess }),
         });
 
-        if (res.status === 404) {
-            // Round expired (server reloaded). Auto-start new round.
-            console.warn('Round expired, starting new round...');
+        if (res.status === 404 || res.status === 400) {
+            // Round expired or already over. Auto-start new round.
+            console.warn('Round stale, starting new round...');
             setInputLoading(false);
             startNewRound();
             return;
@@ -404,10 +404,10 @@ function renderScore(score) {
 function showStrikePopup(strikes, guess) {
     if (strikePopupTimeout) clearTimeout(strikePopupTimeout);
 
-    // Build X icons
+    // Build X icons -- each in its own separate box
     let xsHtml = '';
     for (let i = 0; i < strikes; i++) {
-        xsHtml += '<span class="strike-x-icon">X</span>';
+        xsHtml += '<div class="strike-x-box"><span class="strike-x-icon">X</span></div>';
     }
     els.strikeXs.innerHTML = xsHtml;
     els.strikeGuessText.textContent = guess.toUpperCase();

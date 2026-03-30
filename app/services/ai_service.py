@@ -142,23 +142,26 @@ async def semantic_match(guess: str, answers: list[str]) -> Optional[dict]:
 
     answers_formatted = "\n".join(f"{i+1}. {a}" for i, a in enumerate(answers))
 
-    user_prompt = f"""You are a strict judge for a Family Feud game. Determine if the player's guess refers to the SAME specific action or thing as one of the board answers.
+    user_prompt = f"""You are a judge for a Family Feud survey game. Determine if the player's guess refers to the SAME concept or a closely related answer as one of the board answers.
 
 Board answers:
 {answers_formatted}
 
 Player's guess: "{guess}"
 
-STRICT Rules — follow these exactly:
-- A match means the guess describes the SAME core action, object, or behavior as an answer
+Matching Rules:
+- A match means the guess describes the SAME core concept, action, or closely related idea as an answer
 - Allow: synonyms ("cell phone" = "phone"), shorthand ("coffee" = "grab coffee"), singular/plural
-- Allow: rephrasing of the same idea ("stand at the gate" = "stand by the gate early")
-- REJECT: different actions that merely happen in the same context
-  - Example: "standing in line" does NOT match "check the departure board" (different actions!)
-  - Example: "eating food" does NOT match "buying a ticket" (different actions!)
-- REJECT: overly broad guesses that could apply to many answers
-- When in doubt, REJECT — false negatives are better than false positives
-- Set confidence below 0.5 for anything you're not very sure about
+- Allow: rephrasing ("stand at the gate" = "stand by the gate early")
+- Allow: closely related survey answers -- in a survey, a person giving the guess would ALSO give the board answer or vice versa
+  - Example: "sleep" MATCHES "wake up earlier" (both about sleep/waking habits -- same survey concept)
+  - Example: "working out" MATCHES "go to the gym" (same activity, different phrasing)
+  - Example: "phone" MATCHES "check their phone" (same thing)
+- REJECT: completely different actions that just happen in the same setting
+  - Example: "standing in line" does NOT match "check the departure board" (different actions at same place)
+  - Example: "eating food" does NOT match "buying a ticket" (unrelated actions)
+- REJECT: overly generic guesses that are too broad
+- When genuinely unsure, set confidence below 0.5
 
 Return ONLY valid JSON, no markdown:
 {{
