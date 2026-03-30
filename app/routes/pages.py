@@ -1,5 +1,5 @@
 """
-pages.py — HTML Page Routes
+pages.py -- HTML Page Routes
 
 Serves the landing page and game page via Jinja2 templates.
 """
@@ -15,21 +15,14 @@ templates = Jinja2Templates(directory=str(Path(__file__).parent.parent / "templa
 @router.get("/")
 async def landing_page(request: Request):
     """Serve the landing page."""
-    from app.services.board_service import get_categories
-    categories = get_categories()
     return templates.TemplateResponse("index.html", {
         "request": request,
-        "categories": categories,
     })
 
 
 @router.get("/play")
-async def game_page(request: Request, category: str = None):
+async def game_page(request: Request):
     """Serve the game page shell. All gameplay driven by JS + API."""
-    from app.services.board_service import get_categories
-    categories = get_categories()
     return templates.TemplateResponse("game.html", {
         "request": request,
-        "category": category,
-        "categories": categories,
     })

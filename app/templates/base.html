@@ -12,23 +12,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
     
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/styles.css?v=2">
     {% block head_extra %}{% endblock %}
 </head>
 <body>
-    <header id="app-header">
-        <div class="header-inner">
-            <a href="/" class="logo">🎯 <span>Family Feud AI</span></a>
-        </div>
-    </header>
-    
     <main id="app-main">
         {% block content %}{% endblock %}
     </main>
-
-    <footer id="app-footer">
-        <p>Built with AI-powered semantic matching &bull; Real + AI survey boards</p>
-    </footer>
 
     {% block scripts %}{% endblock %}
 </body>

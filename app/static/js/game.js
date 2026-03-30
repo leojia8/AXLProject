@@ -1,8 +1,8 @@
 /**
- * game.js — Client-Side Game Controller
+ * game.js -- Client-Side Game Controller
  *
  * Drives all gameplay via fetch() calls to /api/* endpoints.
- * Client renders state from server — never stores answers locally.
+ * Client renders state from server -- never stores answers locally.
  */
 
 // ===========================================================================
@@ -25,11 +25,9 @@ function cacheDom() {
         loadingScreen: $('#loading-screen'),
         gameArea: $('#game-area'),
         promptText: $('#prompt-text'),
-        sourceBadge: $('#source-badge'),
-        categoryBadge: $('#category-badge'),
         answerBoard: $('#answer-board'),
         scoreDisplay: $('#score-display'),
-        strikesDisplay: $('#strikes-display'),
+        strikesArea: $('#strikes-area'),
         guessForm: $('#guess-form'),
         guessInput: $('#guess-input'),
         submitBtn: $('#submit-btn'),
@@ -51,7 +49,7 @@ function cacheDom() {
 document.addEventListener('DOMContentLoaded', () => {
     cacheDom();
     attachEventListeners();
-    startNewRound(window.__INITIAL_CATEGORY__);
+    startNewRound();
 });
 
 function attachEventListeners() {
@@ -64,11 +62,10 @@ function attachEventListeners() {
 // API CALLS
 // ===========================================================================
 
-async function startNewRound(category = null) {
+async function startNewRound() {
     setLoading(true);
     try {
         const body = { prefer_real: true };
-        if (category) body.category = category;
 
         const res = await fetch('/api/new-round', {
             method: 'POST',
@@ -142,10 +139,6 @@ function renderNewRound(data) {
     // Prompt
     els.promptText.textContent = data.prompt;
 
-    // Badges
-    renderSourceBadge(data.source_type);
-    els.categoryBadge.textContent = formatCategory(data.category);
-
     // Board
     renderBoard(data.board);
 
@@ -178,24 +171,28 @@ function createSlotElement(slot) {
     div.className = `answer-slot ${slot.revealed ? 'slot-revealed' : 'slot-hidden'}`;
     div.dataset.rank = slot.rank;
 
-    div.innerHTML = `
-        <div class="slot-rank">${slot.rank}</div>
-        <div class="slot-content">${slot.revealed ? escapeHtml(slot.text) : '• • •'}</div>
-        <div class="slot-score">${slot.revealed ? slot.score : '—'}</div>
-    `;
+    if (slot.revealed) {
+        // Revealed: show answer text + score
+        div.innerHTML = `
+            <div class="slot-content">${escapeHtml(slot.text).toUpperCase()}</div>
+            <div class="slot-score">${slot.score}</div>
+        `;
+    } else {
+        // Hidden: show just the rank number centered (like real Family Feud)
+        div.innerHTML = `
+            <div class="slot-number">${slot.rank}</div>
+        `;
+    }
 
     return div;
 }
 
 function renderScore(score) {
     els.scoreDisplay.textContent = score;
-    els.scoreDisplay.classList.remove('flash-correct');
-    void els.scoreDisplay.offsetWidth; // force reflow
-    els.scoreDisplay.classList.add('flash-correct');
 }
 
 function renderStrikes(strikes) {
-    const xs = els.strikesDisplay.querySelectorAll('.strike-x');
+    const xs = els.strikesArea.querySelectorAll('.strike-x');
     xs.forEach((x, i) => {
         if (i < strikes) {
             if (!x.classList.contains('active')) {
@@ -207,25 +204,16 @@ function renderStrikes(strikes) {
     });
 }
 
-function renderSourceBadge(sourceType) {
-    els.sourceBadge.textContent = sourceType.toUpperCase();
-    els.sourceBadge.className = 'badge';
-    if (sourceType === 'real') els.sourceBadge.classList.add('badge-real');
-    else if (sourceType === 'ai') els.sourceBadge.classList.add('badge-ai');
-    else els.sourceBadge.classList.add('badge-hybrid');
-}
-
 function addGuessToHistory(guess, correct, matchedAnswer) {
     const li = document.createElement('li');
     li.className = `guess-item ${correct ? 'correct' : 'incorrect'}`;
-    const icon = correct ? '✓' : '✕';
-    let text = escapeHtml(guess);
+    const icon = correct ? 'MATCH' : 'X';
+    let text = escapeHtml(guess).toUpperCase();
     if (correct && matchedAnswer && matchedAnswer.toLowerCase() !== guess.toLowerCase()) {
-        text += ` → ${escapeHtml(matchedAnswer)}`;
+        text += ` -> ${escapeHtml(matchedAnswer).toUpperCase()}`;
     }
-    li.innerHTML = `<span>${icon}</span> ${text}`;
+    li.innerHTML = `<span class="guess-icon">${icon}</span> ${text}`;
     els.guessList.appendChild(li);
-    // Scroll to bottom
     els.guessList.scrollTop = els.guessList.scrollHeight;
 }
 
@@ -274,11 +262,11 @@ async function showRoundOver(data) {
     // Build overlay
     const allRevealed = data.board.every(s => s.revealed);
     if (allRevealed) {
-        els.overlayTitle.textContent = '🎉 Perfect Round!';
+        els.overlayTitle.textContent = 'PERFECT ROUND!';
     } else if (data.strikes >= maxStrikes) {
-        els.overlayTitle.textContent = '😬 Struck Out!';
+        els.overlayTitle.textContent = 'STRUCK OUT!';
     } else {
-        els.overlayTitle.textContent = 'Round Over!';
+        els.overlayTitle.textContent = 'ROUND OVER';
     }
 
     // Render final board
@@ -326,11 +314,7 @@ function setLoading(loading) {
 function setInputLoading(loading) {
     els.guessInput.disabled = loading;
     els.submitBtn.disabled = loading;
-    if (loading) {
-        els.submitBtn.textContent = '...';
-    } else {
-        els.submitBtn.textContent = 'Guess';
-    }
+    els.submitBtn.textContent = loading ? '...' : 'SUBMIT';
 }
 
 function clearInput() {
@@ -339,7 +323,6 @@ function clearInput() {
 }
 
 function showError(message) {
-    // Simple inline error — could enhance with toast later
     console.error(message);
     const existing = document.querySelector('.error-toast');
     if (existing) existing.remove();
@@ -349,17 +332,12 @@ function showError(message) {
     toast.textContent = message;
     toast.style.cssText = `
         position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-        background: var(--color-danger); color: white; padding: 0.75rem 1.5rem;
-        border-radius: var(--radius-md); font-size: 0.875rem; z-index: 300;
+        background: #ff4136; color: white; padding: 0.75rem 1.5rem;
+        border-radius: 10px; font-size: 0.875rem; z-index: 300;
         animation: fadeIn 0.3s ease;
     `;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
-}
-
-function formatCategory(cat) {
-    if (!cat) return 'General';
-    return cat.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 }
 
 function escapeHtml(text) {
@@ -381,5 +359,5 @@ function handleSubmit(e) {
 }
 
 function handleNewRound() {
-    startNewRound(window.__INITIAL_CATEGORY__);
+    startNewRound();
 }
