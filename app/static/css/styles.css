@@ -1,54 +1,32 @@
 /* ===========================================================================
-   FAMILY FEUD AI -- Authentic Game Show Theme
-   Black background, blue board, yellow accents
+   AI FEUD -- Authentic Game Show Theme
+   Black bg, blue board, yellow accents, dark-circle rank numbers
    =========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@700;800;900&display=swap');
 
 :root {
-    /* -- Colors -- */
     --bg-black: #0a0a14;
-    --bg-dark: #0d0d1a;
-    
     --blue-deep: #0f2044;
     --blue-board: #1a3a6e;
     --blue-slot: #2960a8;
-    --blue-slot-light: #3a78cc;
     --blue-bright: #4a8fd4;
-    --blue-glow: rgba(41, 96, 168, 0.4);
-
+    --blue-circle: #0d1f4a;
     --yellow: #ffc107;
     --yellow-bright: #ffd740;
     --yellow-deep: #e6a800;
     --gold-gradient: linear-gradient(180deg, #ffd740 0%, #e6a800 50%, #c49000 100%);
-
     --white: #ffffff;
     --white-soft: #c8d4e6;
     --text-muted: #6b82a8;
-
     --correct: #2ecc40;
     --wrong: #ff4136;
-
-    /* -- Typography -- */
     --font-primary: 'Inter', -apple-system, sans-serif;
     --font-display: 'Outfit', 'Inter', sans-serif;
 }
 
-
-/* ===========================================================================
-   RESET & BASE
-   =========================================================================== */
-
-*, *::before, *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-html {
-    scroll-behavior: smooth;
-    -webkit-font-smoothing: antialiased;
-}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 
 body {
     font-family: var(--font-primary);
@@ -60,18 +38,9 @@ body {
     flex-direction: column;
 }
 
-a {
-    color: var(--yellow);
-    text-decoration: none;
-}
-
+a { color: var(--yellow); text-decoration: none; }
 ul { list-style: none; }
-
-#app-main {
-    flex: 1;
-    width: 100%;
-}
-
+#app-main { flex: 1; width: 100%; }
 .hidden { display: none !important; }
 
 
@@ -90,7 +59,6 @@ ul { list-style: none; }
     background: radial-gradient(ellipse at 50% 30%, #07101f 0%, #020812 35%, #010713 60%, #000000 100%);
 }
 
-/* Spotlight effects */
 .landing-spotlights {
     position: absolute;
     inset: 0;
@@ -107,12 +75,7 @@ ul { list-style: none; }
 .spotlight-left {
     left: 0;
     bottom: 0;
-    background: linear-gradient(
-        to top right,
-        rgba(100, 170, 255, 0.12) 0%,
-        rgba(100, 170, 255, 0.04) 40%,
-        transparent 70%
-    );
+    background: linear-gradient(to top right, rgba(100, 170, 255, 0.12) 0%, rgba(100, 170, 255, 0.04) 40%, transparent 70%);
     transform: rotate(-5deg);
     transform-origin: bottom left;
 }
@@ -120,12 +83,7 @@ ul { list-style: none; }
 .spotlight-right {
     right: 0;
     bottom: 0;
-    background: linear-gradient(
-        to top left,
-        rgba(100, 170, 255, 0.12) 0%,
-        rgba(100, 170, 255, 0.04) 40%,
-        transparent 70%
-    );
+    background: linear-gradient(to top left, rgba(100, 170, 255, 0.12) 0%, rgba(100, 170, 255, 0.04) 40%, transparent 70%);
     transform: rotate(5deg);
     transform-origin: bottom right;
 }
@@ -135,11 +93,7 @@ ul { list-style: none; }
     bottom: 0;
     width: 200px;
     height: 500px;
-    background: linear-gradient(
-        to top,
-        rgba(140, 180, 255, 0.08) 0%,
-        transparent 60%
-    );
+    background: linear-gradient(to top, rgba(140, 180, 255, 0.08) 0%, transparent 60%);
     transform: rotate(20deg);
     transform-origin: bottom center;
 }
@@ -149,11 +103,7 @@ ul { list-style: none; }
     bottom: 0;
     width: 200px;
     height: 500px;
-    background: linear-gradient(
-        to top,
-        rgba(140, 180, 255, 0.08) 0%,
-        transparent 60%
-    );
+    background: linear-gradient(to top, rgba(140, 180, 255, 0.08) 0%, transparent 60%);
     transform: rotate(-20deg);
     transform-origin: bottom center;
 }
@@ -181,7 +131,6 @@ ul { list-style: none; }
     50% { transform: translateY(-10px); }
 }
 
-/* Play button */
 .btn-play {
     display: inline-block;
     font-family: var(--font-display);
@@ -213,14 +162,11 @@ ul { list-style: none; }
    =========================================================================== */
 
 .game-area {
-    max-width: 750px;
+    max-width: 700px;
     margin: 0 auto;
     padding: 1rem;
     animation: fadeIn 0.5s ease-out;
 }
-
-
-/* -- Loading -- */
 
 .loading-screen {
     display: flex;
@@ -242,65 +188,113 @@ ul { list-style: none; }
 }
 
 
-/* -- Score Bar (top center, like the show) -- */
+/* ===========================================================================
+   TOP BAR: Timer + Score + Sound Toggle (boxed, like the show)
+   =========================================================================== */
 
-.score-bar {
+.top-bar {
     display: flex;
     justify-content: center;
-    margin-bottom: 0.75rem;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
 }
 
-.score-number {
-    display: inline-block;
-    font-family: var(--font-display);
-    font-size: 2.2rem;
-    font-weight: 900;
-    color: var(--white);
+.top-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;
+    padding: 0.3rem 1rem;
     background: linear-gradient(180deg, #2b6cb0 0%, #1a4a80 100%);
     border: 3px solid var(--blue-bright);
-    padding: 0.3rem 2rem;
     border-radius: 8px;
-    min-width: 100px;
-    text-align: center;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
 
+.top-box-value {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.2;
+}
 
-/* -- Timer Bar -- */
+.timer-box {
+    min-width: 55px;
+    border-color: var(--yellow);
+}
+
+.timer-box .top-box-value {
+    color: var(--yellow);
+}
+
+.timer-box.warning .top-box-value {
+    color: #ff8c00;
+}
+
+.timer-box.danger {
+    border-color: var(--wrong);
+    animation: timerBoxPulse 0.5s ease infinite;
+}
+
+.timer-box.danger .top-box-value {
+    color: var(--wrong);
+}
+
+.score-box {
+    min-width: 70px;
+}
+
+/* Sound Toggle */
+.sound-toggle {
+    cursor: pointer;
+    min-width: 40px;
+    padding: 0.3rem 0.6rem;
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    font-weight: 900;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.2s ease;
+}
+
+.sound-toggle:hover {
+    border-color: var(--yellow);
+}
+
+.sound-toggle.muted {
+    opacity: 0.5;
+}
+
+
+/* ===========================================================================
+   TIMER BAR
+   =========================================================================== */
 
 .timer-bar-container {
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
     background: rgba(0, 0, 0, 0.3);
-    border-radius: 6px;
+    border-radius: 4px;
     overflow: hidden;
-    height: 8px;
-    border: 1px solid rgba(74, 143, 212, 0.3);
+    height: 6px;
+    border: 1px solid rgba(74, 143, 212, 0.2);
 }
 
 .timer-bar {
     height: 100%;
     background: var(--yellow);
-    border-radius: 6px;
+    border-radius: 4px;
     transition: width 1s linear;
     width: 100%;
 }
 
-.timer-bar.warning {
-    background: #ff8c00;
-}
+.timer-bar.warning { background: #ff8c00; }
 
 .timer-bar.danger {
     background: var(--wrong);
     animation: timerPulse 0.5s ease infinite;
-}
-
-.timer-text {
-    text-align: center;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    margin-bottom: 0.25rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
 }
 
 @keyframes timerPulse {
@@ -308,13 +302,20 @@ ul { list-style: none; }
     50% { opacity: 0.6; }
 }
 
+@keyframes timerBoxPulse {
+    0%, 100% { border-color: var(--wrong); }
+    50% { border-color: rgba(255, 65, 54, 0.3); }
+}
 
-/* -- Prompt Area -- */
+
+/* ===========================================================================
+   PROMPT AREA
+   =========================================================================== */
 
 .prompt-area {
     text-align: center;
-    margin-bottom: 1rem;
-    padding: 1.25rem 1.5rem;
+    margin-bottom: 0.75rem;
+    padding: 1rem 1.5rem;
     background: linear-gradient(180deg, #2b6cb0 0%, #1a4a80 100%);
     border: 3px solid var(--blue-bright);
     border-radius: 10px;
@@ -323,7 +324,7 @@ ul { list-style: none; }
 
 .prompt-text {
     font-family: var(--font-display);
-    font-size: clamp(1rem, 2.5vw, 1.35rem);
+    font-size: clamp(0.95rem, 2.5vw, 1.25rem);
     font-weight: 700;
     line-height: 1.4;
     color: var(--white);
@@ -331,70 +332,85 @@ ul { list-style: none; }
 
 
 /* ===========================================================================
-   ANSWER BOARD (the main game board)
-   2-column grid, yellow border, blue slots with rank numbers
+   BOARD FRAME (yellow glow surround like the reference)
+   =========================================================================== */
+
+.board-frame {
+    position: relative;
+    padding: 6px;
+    margin-bottom: 0.75rem;
+    background: linear-gradient(180deg, var(--yellow) 0%, var(--yellow-deep) 100%);
+    border-radius: 14px;
+    box-shadow:
+        0 0 30px rgba(255, 193, 7, 0.25),
+        0 0 60px rgba(255, 193, 7, 0.1);
+}
+
+
+/* ===========================================================================
+   ANSWER BOARD
    =========================================================================== */
 
 .answer-board {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 5px;
-    margin-bottom: 1rem;
-    padding: 10px;
+    gap: 4px;
+    padding: 6px;
     background: linear-gradient(180deg, #0c1a35 0%, #060d1e 100%);
-    border: 4px solid var(--yellow);
-    border-radius: 12px;
-    box-shadow:
-        0 0 25px rgba(255, 193, 7, 0.12),
-        inset 0 0 30px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
 }
 
 
-/* -- Hidden Slot: blue box with centered rank number -- */
+/* -- Hidden Slot: dark blue circle with rank number -- */
 
 .answer-slot.slot-hidden {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 60px;
+    min-height: 56px;
     background: linear-gradient(180deg, var(--blue-slot) 0%, #1e4a90 100%);
-    border: 2px solid rgba(74, 143, 212, 0.3);
+    border: 2px solid rgba(74, 143, 212, 0.2);
     border-radius: 6px;
     cursor: default;
     transition: all 0.3s ease;
 }
 
-.answer-slot.slot-hidden:hover {
-    border-color: rgba(74, 143, 212, 0.5);
-}
-
 .slot-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--blue-circle);
+    border: 2px solid rgba(74, 143, 212, 0.3);
     font-family: var(--font-display);
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     font-weight: 900;
     color: var(--white);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 
-/* -- Revealed Slot: blue box with answer text + score -- */
+/* -- Revealed Slot -- */
 
 .answer-slot.slot-revealed {
     display: flex;
     align-items: center;
-    min-height: 60px;
+    min-height: 56px;
     background: linear-gradient(180deg, #2b6cb0 0%, #1e4488 100%);
     border: 2px solid var(--yellow);
     border-radius: 6px;
-    animation: revealFlip 0.5s ease-out;
+    animation: revealFlip 0.4s ease-out;
     box-shadow: 0 0 12px rgba(255, 193, 7, 0.25);
 }
 
 .slot-content {
     flex: 1;
-    padding: 0.5rem 0.75rem;
+    padding: 0.4rem 0.75rem;
     font-family: var(--font-display);
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 700;
     color: var(--white);
     letter-spacing: 0.04em;
@@ -405,40 +421,74 @@ ul { list-style: none; }
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 44px;
+    min-width: 40px;
     padding: 0 0.5rem;
     font-family: var(--font-display);
     font-weight: 900;
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: var(--yellow);
     text-shadow: 0 0 8px rgba(255, 193, 7, 0.4);
 }
 
 
 /* ===========================================================================
-   STRIKES (big red Xs below the board)
+   STRIKE POPUP (big red X overlay, appears on wrong guess)
    =========================================================================== */
 
-.strikes-area {
+.strike-popup {
+    position: fixed;
+    inset: 0;
+    z-index: 150;
     display: flex;
+    align-items: center;
     justify-content: center;
-    gap: 12px;
-    margin-bottom: 1rem;
+    pointer-events: none;
+    animation: strikeIn 0.1s ease;
 }
 
-.strike-x {
+.strike-popup-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    animation: strikeScale 0.4s ease;
+}
+
+.strike-xs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: rgba(180, 20, 20, 0.92);
+    border: 4px solid #ff2020;
+    border-radius: 16px;
+    padding: 1.5rem 2.5rem;
+    box-shadow: 0 0 40px rgba(255, 65, 54, 0.5);
+}
+
+.strike-x-icon {
     font-family: var(--font-display);
-    font-size: 2.2rem;
+    font-size: 4rem;
     font-weight: 900;
-    color: rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
+    color: var(--white);
+    text-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
     line-height: 1;
 }
 
-.strike-x.active {
+.strike-guess-text {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
     color: var(--wrong);
-    text-shadow: 0 0 15px rgba(255, 65, 54, 0.7);
-    animation: shakeStrike 0.4s ease;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(255, 65, 54, 0.5);
+    letter-spacing: 0.05em;
+}
+
+@keyframes strikeScale {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
 }
 
 
@@ -447,7 +497,7 @@ ul { list-style: none; }
    =========================================================================== */
 
 .input-area {
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .guess-form {
@@ -466,6 +516,7 @@ ul { list-style: none; }
     font-size: 1.05rem;
     font-weight: 600;
     text-transform: uppercase;
+    text-align: center;
     letter-spacing: 0.04em;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
@@ -481,11 +532,10 @@ ul { list-style: none; }
     text-transform: none;
     font-weight: 400;
     letter-spacing: 0;
+    text-align: center;
 }
 
-.guess-input:disabled {
-    opacity: 0.5;
-}
+.guess-input:disabled { opacity: 0.5; }
 
 .btn-submit {
     font-family: var(--font-display);
@@ -506,59 +556,59 @@ ul { list-style: none; }
     transform: translateY(-1px);
 }
 
-.btn-submit:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-}
+.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
 
 /* ===========================================================================
-   GUESS HISTORY
+   AI TOOLTIP
    =========================================================================== */
 
-.guess-history {
-    background: rgba(15, 32, 68, 0.6);
-    border: 2px solid rgba(41, 96, 168, 0.3);
-    border-radius: 10px;
-    padding: 0.75rem 1rem;
-    max-height: 120px;
-    overflow-y: auto;
-}
-
-.guess-list {
+.ai-tooltip {
+    position: relative;
     display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
+    justify-content: center;
+    margin-top: 0.5rem;
 }
 
-.guess-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 0.25rem 0.65rem;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-    animation: fadeIn 0.3s ease;
-}
-
-.guess-icon {
+.ai-info-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--blue-deep);
+    border: 2px solid var(--blue-bright);
+    color: var(--white);
+    font-family: var(--font-display);
+    font-size: 0.8rem;
     font-weight: 900;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.guess-item.correct {
-    background: rgba(46, 204, 64, 0.15);
-    color: var(--correct);
-    border: 1px solid rgba(46, 204, 64, 0.3);
+.ai-info-btn:hover {
+    border-color: var(--yellow);
+    background: var(--blue-board);
 }
 
-.guess-item.incorrect {
-    background: rgba(255, 65, 54, 0.15);
-    color: var(--wrong);
-    border: 1px solid rgba(255, 65, 54, 0.3);
+.ai-tooltip-text {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 280px;
+    padding: 0.65rem 0.85rem;
+    background: var(--blue-deep);
+    border: 2px solid var(--blue-bright);
+    border-radius: 8px;
+    color: var(--white-soft);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    text-align: center;
+    margin-bottom: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    animation: fadeIn 0.2s ease;
 }
 
 
@@ -584,7 +634,7 @@ ul { list-style: none; }
     border: 3px solid var(--yellow);
     border-radius: 14px;
     padding: 2rem;
-    max-width: 650px;
+    max-width: 600px;
     width: 100%;
     max-height: 90vh;
     overflow-y: auto;
@@ -647,10 +697,6 @@ ul { list-style: none; }
     color: var(--white);
 }
 
-.commentary {
-    display: none;
-}
-
 .overlay-actions {
     display: flex;
     justify-content: center;
@@ -684,23 +730,15 @@ ul { list-style: none; }
    FLASH EFFECTS
    =========================================================================== */
 
-.flash-correct {
-    animation: flashGreen 0.5s ease;
-}
-
-.flash-incorrect {
-    animation: flashRed 0.5s ease;
-}
+.flash-correct { animation: flashGreen 0.5s ease; }
+.flash-incorrect { animation: flashRed 0.5s ease; }
 
 
 /* ===========================================================================
    ANIMATIONS
    =========================================================================== */
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(30px); }
@@ -718,17 +756,7 @@ ul { list-style: none; }
     100% { transform: scaleY(1); opacity: 1; }
 }
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-@keyframes shakeStrike {
-    0%, 100% { transform: translateX(0); }
-    20% { transform: translateX(-6px); }
-    40% { transform: translateX(6px); }
-    60% { transform: translateX(-4px); }
-    80% { transform: translateX(4px); }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
 @keyframes flashGreen {
     0% { box-shadow: 0 0 0 0 rgba(46, 204, 64, 0.5); }
@@ -748,40 +776,19 @@ ul { list-style: none; }
    =========================================================================== */
 
 @media (max-width: 768px) {
-    .game-area {
-        padding: 0.75rem;
-    }
-
-    .answer-board {
-        grid-template-columns: 1fr;
-        padding: 6px;
-    }
-
-    .final-board {
-        grid-template-columns: 1fr;
-    }
-
-    .guess-form {
-        flex-direction: column;
-    }
-
-    .landing-logo {
-        max-width: 300px;
-    }
-
-    .btn-play {
-        font-size: 1.2rem;
-        padding: 0.85rem 3rem;
-    }
+    .game-area { padding: 0.75rem; }
+    .answer-board { grid-template-columns: 1fr; }
+    .final-board { grid-template-columns: 1fr; }
+    .guess-form { flex-direction: column; }
+    .landing-logo { max-width: 300px; }
+    .btn-play { font-size: 1.2rem; padding: 0.85rem 3rem; }
+    .top-bar { gap: 0.5rem; }
 }
 
 @media (max-width: 480px) {
-    .answer-slot.slot-hidden,
-    .answer-slot.slot-revealed {
-        min-height: 50px;
-    }
-
-    .slot-number { font-size: 1.3rem; }
-    .slot-content { font-size: 0.78rem; }
-    .score-number { font-size: 1.8rem; }
+    .answer-slot.slot-hidden, .answer-slot.slot-revealed { min-height: 48px; }
+    .slot-number { width: 36px; height: 36px; font-size: 1.2rem; }
+    .slot-content { font-size: 0.75rem; }
+    .top-box-value { font-size: 1.4rem; }
+    .strike-x-icon { font-size: 3rem; }
 }
