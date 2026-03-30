@@ -87,7 +87,7 @@ ul { list-style: none; }
     justify-content: center;
     min-height: 100vh;
     overflow: hidden;
-    background: radial-gradient(ellipse at 50% 40%, #0c1e40 0%, #070a18 60%, #000000 100%);
+    background: radial-gradient(ellipse at 50% 30%, #07101f 0%, #020812 35%, #010713 60%, #000000 100%);
 }
 
 /* Spotlight effects */
@@ -100,27 +100,62 @@ ul { list-style: none; }
 
 .spotlight {
     position: absolute;
-    width: 300px;
-    height: 600px;
-    background: linear-gradient(
-        180deg,
-        rgba(100, 160, 255, 0.08) 0%,
-        rgba(100, 160, 255, 0.03) 50%,
-        transparent 100%
-    );
-    transform-origin: top center;
+    width: 250px;
+    height: 700px;
 }
 
 .spotlight-left {
-    left: 5%;
-    top: 0;
-    transform: rotate(15deg);
+    left: 0;
+    bottom: 0;
+    background: linear-gradient(
+        to top right,
+        rgba(100, 170, 255, 0.12) 0%,
+        rgba(100, 170, 255, 0.04) 40%,
+        transparent 70%
+    );
+    transform: rotate(-5deg);
+    transform-origin: bottom left;
 }
 
 .spotlight-right {
-    right: 5%;
-    top: 0;
-    transform: rotate(-15deg);
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        to top left,
+        rgba(100, 170, 255, 0.12) 0%,
+        rgba(100, 170, 255, 0.04) 40%,
+        transparent 70%
+    );
+    transform: rotate(5deg);
+    transform-origin: bottom right;
+}
+
+.spotlight-bottom-left {
+    left: 10%;
+    bottom: 0;
+    width: 200px;
+    height: 500px;
+    background: linear-gradient(
+        to top,
+        rgba(140, 180, 255, 0.08) 0%,
+        transparent 60%
+    );
+    transform: rotate(20deg);
+    transform-origin: bottom center;
+}
+
+.spotlight-bottom-right {
+    right: 10%;
+    bottom: 0;
+    width: 200px;
+    height: 500px;
+    background: linear-gradient(
+        to top,
+        rgba(140, 180, 255, 0.08) 0%,
+        transparent 60%
+    );
+    transform: rotate(-20deg);
+    transform-origin: bottom center;
 }
 
 .landing-content {
@@ -228,6 +263,49 @@ ul { list-style: none; }
     min-width: 100px;
     text-align: center;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+
+/* -- Timer Bar -- */
+
+.timer-bar-container {
+    margin-bottom: 0.75rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+    overflow: hidden;
+    height: 8px;
+    border: 1px solid rgba(74, 143, 212, 0.3);
+}
+
+.timer-bar {
+    height: 100%;
+    background: var(--yellow);
+    border-radius: 6px;
+    transition: width 1s linear;
+    width: 100%;
+}
+
+.timer-bar.warning {
+    background: #ff8c00;
+}
+
+.timer-bar.danger {
+    background: var(--wrong);
+    animation: timerPulse 0.5s ease infinite;
+}
+
+.timer-text {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+}
+
+@keyframes timerPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
 }
 
 
@@ -570,14 +648,7 @@ ul { list-style: none; }
 }
 
 .commentary {
-    color: var(--white-soft);
-    font-style: italic;
-    margin-bottom: 1.5rem;
-    font-size: 0.9375rem;
-    padding: 0.75rem;
-    background: rgba(255, 193, 7, 0.08);
-    border-radius: 8px;
-    border: 1px solid rgba(255, 193, 7, 0.15);
+    display: none;
 }
 
 .overlay-actions {

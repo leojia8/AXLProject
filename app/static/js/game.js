@@ -2,7 +2,7 @@
  * game.js -- Client-Side Game Controller
  *
  * Drives all gameplay via fetch() calls to /api/* endpoints.
- * Client renders state from server -- never stores answers locally.
+ * Includes: timer countdown, sound effects, no commentary.
  */
 
 // ===========================================================================
@@ -11,6 +11,116 @@
 let currentRoundId = null;
 let isLoading = false;
 let maxStrikes = 3;
+let timerInterval = null;
+let timeRemaining = 60;
+const ROUND_TIME = 60; // seconds
+
+// ===========================================================================
+// SOUND EFFECTS (Web Audio API -- no files needed)
+// ===========================================================================
+
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+
+function ensureAudio() {
+    if (!audioCtx) audioCtx = new AudioCtx();
+    return audioCtx;
+}
+
+function playCorrectSound() {
+    try {
+        const ctx = ensureAudio();
+        // Two-tone ascending "ding ding"
+        [0, 0.12].forEach((delay, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = 'sine';
+            osc.frequency.value = i === 0 ? 523.25 : 659.25; // C5, E5
+            gain.gain.setValueAtTime(0.3, ctx.currentTime + delay);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.3);
+            osc.start(ctx.currentTime + delay);
+            osc.stop(ctx.currentTime + delay + 0.3);
+        });
+    } catch (e) { /* audio not supported */ }
+}
+
+function playWrongSound() {
+    try {
+        const ctx = ensureAudio();
+        // Low buzz
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sawtooth';
+        osc.frequency.value = 120;
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.4);
+    } catch (e) { /* audio not supported */ }
+}
+
+function playWinSound() {
+    try {
+        const ctx = ensureAudio();
+        // Ascending fanfare
+        const notes = [523.25, 659.25, 783.99, 1046.5]; // C5 E5 G5 C6
+        notes.forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            const t = ctx.currentTime + i * 0.15;
+            gain.gain.setValueAtTime(0.25, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+            osc.start(t);
+            osc.stop(t + 0.4);
+        });
+    } catch (e) { /* audio not supported */ }
+}
+
+function playLoseSound() {
+    try {
+        const ctx = ensureAudio();
+        // Descending "wah wah"
+        const notes = [392, 349.23, 311.13, 261.63]; // G4 F4 Eb4 C4
+        notes.forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = 'triangle';
+            osc.frequency.value = freq;
+            const t = ctx.currentTime + i * 0.25;
+            gain.gain.setValueAtTime(0.25, t);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+            osc.start(t);
+            osc.stop(t + 0.5);
+        });
+    } catch (e) { /* audio not supported */ }
+}
+
+function playTimerWarningSound() {
+    try {
+        const ctx = ensureAudio();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.value = 880;
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.1);
+    } catch (e) { /* audio not supported */ }
+}
+
 
 // ===========================================================================
 // DOM REFERENCES
@@ -39,6 +149,8 @@ function cacheDom() {
         finalStrikes: $('#final-strikes'),
         commentary: $('#commentary'),
         playAgainBtn: $('#play-again-btn'),
+        timerBar: $('#timer-bar'),
+        timerText: $('#timer-text'),
     };
 }
 
@@ -55,6 +167,76 @@ document.addEventListener('DOMContentLoaded', () => {
 function attachEventListeners() {
     els.guessForm.addEventListener('submit', handleSubmit);
     els.playAgainBtn.addEventListener('click', handleNewRound);
+}
+
+
+// ===========================================================================
+// TIMER
+// ===========================================================================
+
+function startTimer() {
+    stopTimer();
+    timeRemaining = ROUND_TIME;
+    updateTimerDisplay();
+
+    timerInterval = setInterval(() => {
+        timeRemaining--;
+        updateTimerDisplay();
+
+        // Warning sounds in last 10 seconds
+        if (timeRemaining <= 10 && timeRemaining > 0) {
+            playTimerWarningSound();
+        }
+
+        if (timeRemaining <= 0) {
+            stopTimer();
+            handleTimeUp();
+        }
+    }, 1000);
+}
+
+function stopTimer() {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+}
+
+function updateTimerDisplay() {
+    const pct = (timeRemaining / ROUND_TIME) * 100;
+    els.timerBar.style.width = pct + '%';
+    els.timerText.textContent = timeRemaining + 's';
+
+    // Color transitions
+    els.timerBar.classList.remove('warning', 'danger');
+    if (timeRemaining <= 10) {
+        els.timerBar.classList.add('danger');
+    } else if (timeRemaining <= 20) {
+        els.timerBar.classList.add('warning');
+    }
+}
+
+async function handleTimeUp() {
+    // Disable input
+    els.guessInput.disabled = true;
+    els.submitBtn.disabled = true;
+
+    // Show round over
+    const revealData = await revealBoard();
+    playLoseSound();
+
+    els.overlayTitle.textContent = "TIME'S UP!";
+
+    if (revealData) {
+        els.finalBoard.innerHTML = '';
+        revealData.board.forEach(slot => {
+            els.finalBoard.appendChild(createSlotElement(slot));
+        });
+        els.finalScore.textContent = revealData.score;
+        els.finalStrikes.textContent = `${revealData.strikes} / ${maxStrikes}`;
+    }
+
+    els.roundOverOverlay.classList.remove('hidden');
 }
 
 
@@ -81,6 +263,7 @@ async function startNewRound() {
 
         renderNewRound(data);
         setLoading(false);
+        startTimer();
     } catch (err) {
         console.error('Failed to start round:', err);
         setLoading(false);
@@ -89,7 +272,7 @@ async function startNewRound() {
 }
 
 async function submitGuess(guess) {
-    if (isLoading || !currentRoundId) return;
+    if (isLoading || !currentRoundId || timeRemaining <= 0) return;
     setInputLoading(true);
 
     try {
@@ -136,23 +319,12 @@ async function revealBoard() {
 // ===========================================================================
 
 function renderNewRound(data) {
-    // Prompt
     els.promptText.textContent = data.prompt;
-
-    // Board
     renderBoard(data.board);
-
-    // Stats
     renderScore(data.score);
     renderStrikes(data.strikes);
-
-    // Clear guess history
     els.guessList.innerHTML = '';
-
-    // Hide overlay
     hideRoundOver();
-
-    // Enable input
     els.guessInput.disabled = false;
     els.submitBtn.disabled = false;
     els.guessInput.focus();
@@ -172,13 +344,11 @@ function createSlotElement(slot) {
     div.dataset.rank = slot.rank;
 
     if (slot.revealed) {
-        // Revealed: show answer text + score
         div.innerHTML = `
             <div class="slot-content">${escapeHtml(slot.text).toUpperCase()}</div>
             <div class="slot-score">${slot.score}</div>
         `;
     } else {
-        // Hidden: show just the rank number centered (like real Family Feud)
         div.innerHTML = `
             <div class="slot-number">${slot.rank}</div>
         `;
@@ -223,25 +393,24 @@ function addGuessToHistory(guess, correct, matchedAnswer) {
 // ===========================================================================
 
 function handleGuessResult(data, guess) {
-    // Update board
     renderBoard(data.board);
     renderScore(data.score);
     renderStrikes(data.strikes);
-
-    // Add to history
     addGuessToHistory(guess, data.correct, data.matched_answer);
 
-    // Flash feedback on input
+    // Sound effects
     if (data.correct) {
+        playCorrectSound();
         els.guessInput.classList.add('flash-correct');
         setTimeout(() => els.guessInput.classList.remove('flash-correct'), 500);
     } else {
+        playWrongSound();
         els.guessInput.classList.add('flash-incorrect');
         setTimeout(() => els.guessInput.classList.remove('flash-incorrect'), 500);
     }
 
-    // Round over?
     if (data.round_over) {
+        stopTimer();
         showRoundOver(data);
     }
 }
@@ -252,24 +421,23 @@ function handleGuessResult(data, guess) {
 // ===========================================================================
 
 async function showRoundOver(data) {
-    // Disable input
     els.guessInput.disabled = true;
     els.submitBtn.disabled = true;
 
-    // Get full revealed board
     const revealData = await revealBoard();
 
-    // Build overlay
     const allRevealed = data.board.every(s => s.revealed);
     if (allRevealed) {
         els.overlayTitle.textContent = 'PERFECT ROUND!';
+        playWinSound();
     } else if (data.strikes >= maxStrikes) {
         els.overlayTitle.textContent = 'STRUCK OUT!';
+        playLoseSound();
     } else {
         els.overlayTitle.textContent = 'ROUND OVER';
+        playLoseSound();
     }
 
-    // Render final board
     if (revealData) {
         els.finalBoard.innerHTML = '';
         revealData.board.forEach(slot => {
@@ -277,22 +445,17 @@ async function showRoundOver(data) {
         });
         els.finalScore.textContent = revealData.score;
         els.finalStrikes.textContent = `${revealData.strikes} / ${maxStrikes}`;
-
-        if (revealData.commentary) {
-            els.commentary.textContent = revealData.commentary;
-            els.commentary.classList.remove('hidden');
-        }
     } else {
         els.finalScore.textContent = data.score;
         els.finalStrikes.textContent = `${data.strikes} / ${maxStrikes}`;
     }
 
+    // No commentary -- hidden by CSS
     els.roundOverOverlay.classList.remove('hidden');
 }
 
 function hideRoundOver() {
     els.roundOverOverlay.classList.add('hidden');
-    els.commentary.classList.add('hidden');
 }
 
 
